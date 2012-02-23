@@ -8,10 +8,10 @@ Gem::Specification.new do |s|
   s.authors     = ["Ian Truslove"]
   s.email       = ["ian.truslove@gmail.com"]
   s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.summary     = %q{Makes nice strings for your SemVer needs}
+  s.description = %q{See semver.org for the rules}
 
-  s.rubyforge_project = "semverstringer"
+#  s.rubyforge_project = "semverstringer"
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
