@@ -1,8 +1,9 @@
 module Semverstringer
 	class Semver
-		def initialize(params={})
-			@@disallowed_chars = /[^0-9A-Za-z-]/
 
+		@@disallowed_chars = /[^0-9A-Za-z-]/
+
+		def initialize(params={})
 			@major, @minor, @patch = get_version_numbers_from params
 			@build = get_build_string_from params
 			@pre = get_pre_string_from params
@@ -15,7 +16,6 @@ module Semverstringer
 			version
 		end
 
-		#TODO: Extract these out as a mixin?
 		private
 		def raise_if_invalid_version_number(hash, key)
 			if hash.has_key? key
