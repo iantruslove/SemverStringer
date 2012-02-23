@@ -9,10 +9,22 @@ module Semverstringer
 				@major = @minor = 0
 				@patch = 1
 			end
+
+			if params.has_key? :build
+				build_params = (params[:build].is_a? Array) ? params[:build] : Array.new(1, params[:build])
+					
+				build_params.each do |param|
+					raise ArgumentError.new("Characters in build ID are not allowed") if /[^0-9A-Za-z-]/.match param.to_s
+				end
+
+				@build = build_params.join "."
+			end
 		end
 
 		def to_s
-			"#{@major}.#{@minor}.#{@patch}"
+			version = "#{@major}.#{@minor}.#{@patch}"
+			version << "+build.#{@build}" unless @build == nil
+			version
 		end
 
 		#TODO: Extract this out as a mixin

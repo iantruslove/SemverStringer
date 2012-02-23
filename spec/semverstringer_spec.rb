@@ -34,7 +34,6 @@ describe Semverstringer::Semver do
 		end
 	end
 
-
 	describe "invalid initialization values" do
 		it "should only allow positive version number components" do
 			lambda { Semverstringer::Semver.new :minor=>-1 }.should raise_error(ArgumentError)
@@ -46,6 +45,30 @@ describe Semverstringer::Semver do
 
 		it "should only allow integral version number components" do
 			lambda { Semverstringer::Semver.new :minor=>1.2 }.should raise_error(ArgumentError)
+		end
+	end
+
+	describe "build identifier" do
+		it "can take an integer build id" do
+			semver = Semverstringer::Semver.new :major=>2, :build=>1234
+			semver.to_s.should == "2.0.0+build.1234"
+		end
+
+		it "can take alphanumeric build id" do
+			semver = Semverstringer::Semver.new :build=>"AaBb-123"
+			semver.to_s.should == "0.0.1+build.AaBb-123"
+		end
+
+		it "can accept a list of build identifiers" do
+			semver = Semverstringer::Semver.new :patch=>3, :build=>[1, "aA", "2"]
+			semver.to_s.should == "0.0.3+build.1.aA.2"
+		end
+
+		it "will not allow disallowed characters" do
+			lambda { Semverstringer::Semver.new :build=>"period.is.forbidden" }.should raise_error(ArgumentError)
+			lambda { Semverstringer::Semver.new :build=>"underscore_is_forbidden" }.should raise_error(ArgumentError)
+			lambda { Semverstringer::Semver.new :build=>"special$chars@not*allowed!" }.should raise_error(ArgumentError)
+			lambda { Semverstringer::Semver.new :build=>["or", "in", "arrays!!!"] }.should raise_error(ArgumentError)
 		end
 	end
 end
