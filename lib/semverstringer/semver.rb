@@ -1,13 +1,17 @@
 module Semverstringer
 	class Semver
 		def initialize(params={})
+			@@disallowed_chars = /[^0-9A-Za-z-]/
+
 			@major, @minor, @patch = get_version_numbers_from params
 			@build = get_build_string_from params
+			@pre = get_pre_string_from params
 		end
 
 		def to_s
 			version = "#{@major}.#{@minor}.#{@patch}"
-			version << "+build.#{@build}" unless @build == nil
+			version << "-#{@pre}" unless @pre == nil
+			version << "+#{@build}" unless @build == nil
 			version
 		end
 
@@ -41,18 +45,33 @@ module Semverstringer
 		end
 
 		private
+		def get_pre_string_from(params) 
+			return get_optional_string_from params, :pre
+		end
+
+		private
 		def get_build_string_from(params) 
-			if params.has_key? :build
-				build_params = (params[:build].is_a? Array) ? params[:build] : Array.new(1, params[:build])
+			return get_optional_string_from params, :build
+		end
+
+		private
+		def get_optional_string_from(params, type)
+			if params.has_key? type
+				identifiers = scalar_to_array params[type]
 					
-				build_params.each do |param|
-					raise ArgumentError.new("Characters in build ID are not allowed") if /[^0-9A-Za-z-]/.match param.to_s
+				identifiers.each do |param|
+					raise ArgumentError.new("Characters in #{type} ID are not allowed") if @@disallowed_chars.match param.to_s
 				end
 
-				return build_params.join "."
+				return identifiers.join "."
 			else
 				return nil
 			end
+		end
+	
+		private 
+		def scalar_to_array(scalar)
+			(scalar.is_a? Array) ? scalar : Array.new(1, scalar)
 		end
 	end
 end
