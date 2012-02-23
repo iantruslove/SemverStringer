@@ -1,7 +1,6 @@
 module Semverstringer
 	class Semver
 
-		@@disallowed_chars = /[^0-9A-Za-z-]/
 
 		def initialize(params={})
 			@major, @minor, @patch = get_version_numbers_from params
@@ -56,11 +55,13 @@ module Semverstringer
 
 		private
 		def get_optional_string_from(params, type)
+			disallowed_chars = /[^0-9A-Za-z-]/
+
 			if params.has_key? type
 				identifiers = scalar_to_array params[type]
 					
 				identifiers.each do |param|
-					raise ArgumentError.new("Characters in #{type} ID are not allowed") if @@disallowed_chars.match param.to_s
+					raise ArgumentError.new("Characters in #{type} ID are not allowed") if disallowed_chars.match param.to_s
 				end
 
 				return identifiers.join "."
