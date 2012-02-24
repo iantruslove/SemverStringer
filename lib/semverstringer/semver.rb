@@ -1,6 +1,5 @@
-module Semverstringer
+module SemverStringer
 	class Semver
-
 
 		def initialize(params={})
 			@major, @minor, @patch = get_version_numbers_from params

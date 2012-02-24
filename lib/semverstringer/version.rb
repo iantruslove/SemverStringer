@@ -1,3 +1,3 @@
-module Semverstringer
-  VERSION = "0.0.1"
+module SemverStringer
+  VERSION = "0.1.0"
 end

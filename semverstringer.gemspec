@@ -4,7 +4,7 @@ require "semverstringer/version"
 
 Gem::Specification.new do |s|
   s.name        = "semverstringer"
-  s.version     = Semverstringer::VERSION
+  s.version     = SemverStringer::VERSION
   s.authors     = ["Ian Truslove"]
   s.email       = ["ian.truslove@gmail.com"]
   s.homepage    = ""
