@@ -7,9 +7,9 @@ Gem::Specification.new do |s|
   s.version     = SemverStringer::VERSION
   s.authors     = ["Ian Truslove"]
   s.email       = ["ian.truslove@gmail.com"]
-  s.homepage    = ""
+  s.homepage    = "https://github.com/iantruslove/SemverStringer"
   s.summary     = %q{Makes nice strings for your SemVer needs}
-  s.description = %q{See semver.org for the rules}
+  s.description = %q{See semver.org for the rules, or https://github.com/iantruslove/SemverStringer#readme for a little documentation.}
 
 #  s.rubyforge_project = "semverstringer"
 
