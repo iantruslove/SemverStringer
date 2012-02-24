@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "semverstringer/version"
+require "semver_stringer/version"
 
 Gem::Specification.new do |s|
-  s.name        = "semverstringer"
+  s.name        = "semver_stringer"
   s.version     = SemverStringer::VERSION
   s.authors     = ["Ian Truslove"]
   s.email       = ["ian.truslove@gmail.com"]

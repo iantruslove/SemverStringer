@@ -1,4 +1,4 @@
-require 'semverstringer/semver'
+require 'semver_stringer/semver'
 
 describe SemverStringer::Semver do
 	describe "parameterless construction" do
