@@ -22,3 +22,4 @@ Gives you a little help with your [semver](http://semver.org/) strings.
 ## TODO
 
 * Comparison operators to implement the ordering as laid out in the semver spec.
+* Constructor taking string parameter for parsing and initialization

@@ -1,12 +1,26 @@
 module SemverStringer
 	class Semver
 
+    # Creates a new Semver instance.
+    #
+    # @param [Hash] params the options to create a message with.
+    # @option params [Integer] :major Major version number 
+    # @option params [Integer] :minor Minor version number
+    # @option params [Integer] :patch Patch version number
+    # @option params [String, Integer, Array<String, Integer>] :pre Pre-release identifier(s)
+    # @option params [String, Integer, Array<String, Integer>] :build Build number identifier(s)
 		def initialize(params={})
 			@major, @minor, @patch = get_version_numbers_from params
 			@build = get_build_string_from params
 			@pre = get_pre_string_from params
 		end
 
+    # Returns a string representation of the SemVer
+    #
+    # @example
+    #   SemverStringer::Semver.new(:major=>2, :pre=>"alpha").to_s  #=> "2.0.0-alpha"
+    #
+    # @return [String]
 		def to_s
 			version = "#{@major}.#{@minor}.#{@patch}"
 			version << "-#{@pre}" unless @pre == nil
