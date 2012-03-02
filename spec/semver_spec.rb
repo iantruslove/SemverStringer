@@ -105,6 +105,20 @@ describe SemverStringer::Semver do
 	end
 
   describe "semver comparson operator" do
+
+    RSpec::Matchers.define :be_higher_than do |lower|
+      match do |higher|
+        (higher <=> lower) == 1 and 
+        (higher < lower) == false and
+        (higher == lower) == false and
+        (higher > lower) == true and
+        (lower <=> higher) == -1 and
+        (lower < higher) == true and
+        (lower == higher) == false and
+        (lower > higher) == false
+      end
+    end
+
     it "is equal if version numbers are all identical" do
       semver1 = SemverStringer::Semver.new :major=>2, :minor=>5, :patch=>9
       semver2 = SemverStringer::Semver.new :major=>2, :minor=>5, :patch=>9
@@ -120,79 +134,67 @@ describe SemverStringer::Semver do
       (semver2 > semver1).should == false
     end    
 
-    def assertFormerHigherThanLatter(higher, lower) 
-      (higher <=> lower).should == 1
-      (higher < lower).should == false
-      (higher == lower).should == false
-      (higher > lower).should == true
-
-      (lower <=> higher).should == -1
-      (lower < higher).should == true
-      (lower == higher).should == false
-      (lower > higher).should == false
-    end
-    
     it "gives highest precedence to major" do
       higher = SemverStringer::Semver.new :major=>3, :minor=>1, :patch=>1
       lower = SemverStringer::Semver.new :major=>2, :minor=>50, :patch=>50
 
-      assertFormerHigherThanLatter higher, lower
+      higher.should be_higher_than lower
     end
 
     it "gives second precedence to minor" do
       higher = SemverStringer::Semver.new :major=>2, :minor=>6, :patch=>1
       lower = SemverStringer::Semver.new :major=>2, :minor=>2, :patch=>900
 
-      assertFormerHigherThanLatter higher, lower
+      higher.should be_higher_than lower
     end
 
     it "considers pre-release semvers lower than non-pre-release semvers" do
       higher = SemverStringer::Semver.new
       lower = SemverStringer::Semver.new :pre=>1
 
-      assertFormerHigherThanLatter higher, lower
+      higher.should be_higher_than lower
     end
 
     it "compares pre numbers as integers" do
       higher = SemverStringer::Semver.new :pre=>11
       lower = SemverStringer::Semver.new :pre=>"2"
 
-      assertFormerHigherThanLatter higher, lower
+      higher.should be_higher_than lower
     end
 
     it "compares pre numbers with chars or - as strings" do
       higher = SemverStringer::Semver.new :pre=>"a"
       lower = SemverStringer::Semver.new :pre=>1
 
-      assertFormerHigherThanLatter higher, lower
+      higher.should be_higher_than lower
     end
 
     it "considers build-numbered semvers higher than non-build numbered semvers" do
       higher = SemverStringer::Semver.new :build=>1
       lower = SemverStringer::Semver.new 
 
-      assertFormerHigherThanLatter higher, lower
+      higher.should be_higher_than lower
     end
 
     it "ignores build numbers if the main versions are different" do
       higher = SemverStringer::Semver.new :major=>2, :minor=>6, :patch=>1
       lower = SemverStringer::Semver.new :major=>2, :minor=>5, :patch=>1, :build=>9
 
-      assertFormerHigherThanLatter higher, lower
+      higher.should be_higher_than lower
     end
 
     it "compares integer build numbers as integers" do
       higher = SemverStringer::Semver.new :build=>11
       lower = SemverStringer::Semver.new :build=>"2"
 
-      assertFormerHigherThanLatter higher, lower
+      higher.should be_higher_than lower
     end
 
     it "compares build numbers with chars or - as strings" do
       higher = SemverStringer::Semver.new :build=>"a"
       lower = SemverStringer::Semver.new :build=>1
 
-      assertFormerHigherThanLatter higher, lower
+      higher.should be_higher_than lower
     end
 
     
