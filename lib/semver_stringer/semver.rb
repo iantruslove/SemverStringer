@@ -1,6 +1,8 @@
 module SemverStringer
 	class Semver
 
+	  include Comparable
+
     # Creates a new Semver instance.
     #
     # @param [Hash] params the options to create a message with.
@@ -27,6 +29,55 @@ module SemverStringer
 			version << "+#{@build}" unless @build == nil
 			version
 		end
+
+    def compareVersionAtoms(first, second)
+      if first == nil or second == nil
+        return nil 
+      else
+        unless first.match /[^0-9]/ or second.match /[^0-9]/
+          return first.to_i <=> second.to_i
+        else
+          return first <=> second
+        end
+      end
+    end
+
+    # All the semver.org comparison rules are expressed by this operator
+		def <=>(other) 
+		  if @major != other.instance_variable_get('@major') 
+        return @major <=> other.instance_variable_get('@major')
+      elsif @minor != other.instance_variable_get('@minor')
+        return @minor <=> other.instance_variable_get('@minor') 
+      elsif @patch != other.instance_variable_get('@patch')
+        return @patch <=> other.instance_variable_get('@patch') 
+      else
+
+        other_pre = other.instance_variable_get('@pre')
+        if @pre or other_pre
+          if @pre == nil and other_pre != nil
+            return 1
+          elsif @pre != nil and other_pre == nil
+            return -1
+          else
+            return compareVersionAtoms(@pre, other_pre)
+          end
+        end
+
+
+        other_build = other.instance_variable_get('@build')
+        if @build or other_build
+          if @build == nil and other_build != nil
+            return -1
+          elsif @build != nil and other_build == nil
+            return 1
+          else
+            return compareVersionAtoms(@build, other_build)
+          end
+        end
+
+        return 0
+      end
+    end
 
 		private
 		def raise_if_invalid_version_number(hash, key)
