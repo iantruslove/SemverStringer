@@ -117,6 +117,18 @@ describe SemverStringer::Semver do
         (lower == higher) == false and
         (lower > higher) == false
       end
+
+      failure_message_for_should do |higher|
+        "expected that #{higher} would be higher than #{lower} (<=> got #{higher<=>lower})"
+      end
+
+      failure_message_for_should_not do |higher|
+        "expected that #{higher} would not be higher than #{lower} (<=> got #{higher<=>lower})"
+      end
+
+      description do
+        "be higher than #{lower}"
+      end
     end
 
     it "is equal if version numbers are all identical" do
@@ -197,7 +209,41 @@ describe SemverStringer::Semver do
       higher.should be_higher_than lower
     end
 
-    
-  end
+    describe "Semver::Substring comparator" do
+      it "compares equal numbers as integers" do
+        first = SemverStringer::Semver::Substring.new "4"
+        second = SemverStringer::Semver::Substring.new "4"
 
+        (first <=> second).should be 0
+      end
+
+      it "compares numbers as integers" do
+        higher = SemverStringer::Semver::Substring.new "12"
+        lower = SemverStringer::Semver::Substring.new "4"
+
+        higher.should be_higher_than lower
+      end
+
+      it "compares period-delimeted sub-numbers with each other" do
+        first = SemverStringer::Semver::Substring.new "a.b.2"
+        second = SemverStringer::Semver::Substring.new "a.b.2"
+        (first <=> second).should be 0
+
+        higher = SemverStringer::Semver::Substring.new "4.beta"
+        lower = SemverStringer::Semver::Substring.new "4.alpha"
+        higher.should be_higher_than lower
+
+        higher = SemverStringer::Semver::Substring.new "alpha.11"
+        lower = SemverStringer::Semver::Substring.new "alpha.2"
+        higher.should be_higher_than lower
+      end
+
+      it "compares a number with an extra segment higher than one without" do
+        higher = SemverStringer::Semver::Substring.new "alpha.2.a"
+        lower = SemverStringer::Semver::Substring.new "alpha.2"
+        higher.should be_higher_than lower
+      end
+
+    end
+  end
 end

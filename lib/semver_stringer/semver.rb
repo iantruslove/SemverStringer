@@ -1,7 +1,40 @@
 module SemverStringer
-	class Semver
 
+	class Semver
 	  include Comparable
+
+    class Substring
+      include Comparable
+
+      def initialize(s) 
+        @str = s
+      end
+
+      def <=>(other)
+        other_str = other.instance_variable_get('@str')
+        return Substring::compareVersionStrings @str, other_str
+      end
+
+      def self.compareVersionStrings(first, second)
+        first_components = first.split('.')
+        second_components = second.split('.')
+
+        first_head = first_components.shift
+        second_head = second_components.shift
+
+        head_comparison = Semver::compareVersionAtoms first_head, second_head
+        if head_comparison == 0
+          if first_components.length > 0 or second_components.length > 0 
+            return Substring::compareVersionStrings first_components.join('.'), second_components.join('.')
+          else
+            return 0
+          end
+        else 
+          return head_comparison
+        end
+      end
+
+    end
 
     # Creates a new Semver instance.
     #
@@ -31,8 +64,16 @@ module SemverStringer
 		end
 
     def compareVersionAtoms(first, second)
-      if first == nil or second == nil
-        return nil 
+      return Semver::compareVersionAtoms first, second
+    end
+
+    def self.compareVersionAtoms(first, second)
+      if first == nil and second == nil
+        return nil
+      elsif first != nil and second == nil
+        return 1
+      elsif first == nil and second != nil
+        return -1 
       else
         unless first.match /[^0-9]/ or second.match /[^0-9]/
           return first.to_i <=> second.to_i
