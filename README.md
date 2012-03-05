@@ -19,7 +19,19 @@ Gives you a little help with your [semver](http://semver.org/) strings.
 		semver = SemverStringer::Semver.new version_info
 		semver.to_s 	# => "2.1.13-alpha.1+2134"
 
+### SemVer comparisons
+
+`Semver` implements the comparable module, so it's easy to compare 
+one Semver with another. The rules for comparisons are taken from
+the spec at semver.org.  Example:
+
+    version1 = SemverStringer::Semver.new :major=>1, :minor=>0, :patch=>0
+    version2alpha = SemverStringer::Semver.new :major=>2, :minor=0, :patch=>0, :pre=>"alpha"
+    version2 = SemverStringer::Semver.new :major=>2, :minor=0, :patch=>0
+
+    version1 < version2alpha  #=> true
+    version2alpha < version2  #=> true
+
 ## TODO
 
-* Comparison operators to implement the ordering as laid out in the semver spec.
 * Constructor taking string parameter for parsing and initialization
