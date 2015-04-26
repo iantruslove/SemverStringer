@@ -32,15 +32,41 @@ describe SemverStringer::Semver do
 			semver = SemverStringer::Semver.new :major=>2, :minor=>4, :patch=>20
 			semver.to_s.should == "2.4.20"
 		end
+
+		it "can be constructed with integer-looking strings" do
+			semver = SemverStringer::Semver.new :major=>"2", :minor=>"4", :patch=>"20"
+			semver.to_s.should == "2.4.20"
+		end
+
 	end
+
+	describe "construction with semver string" do
+    it "can take a semver string with the version number" do
+      semver = SemverStringer::Semver.new "1.2.3"
+      semver.to_s.should == "1.2.3"
+    end
+
+    it "can take a semver string with version and pre number" do
+      semver = SemverStringer::Semver.new "1.2.3-alpha.1"
+      semver.to_s.should == "1.2.3-alpha.1"
+    end
+
+    it "can take a semver string with version and build number" do
+      semver = SemverStringer::Semver.new "1.2.3+build.9"
+      semver.to_s.should == "1.2.3+build.9"
+    end
+  end
 
 	describe "invalid initialization values" do
 		it "should only allow positive version number components" do
 			lambda { SemverStringer::Semver.new :minor=>-1 }.should raise_error(ArgumentError)
+			lambda { SemverStringer::Semver.new :minor=>"-1" }.should raise_error(ArgumentError)
+      lambda { SemverStringer::Semver.new "0.-1.0" }.should raise_error(ArgumentError)
 		end
 
 		it "should only allow numeric version number components" do
 			lambda { SemverStringer::Semver.new :minor=>"a" }.should raise_error(ArgumentError)
+      lambda { SemverStringer::Semver.new "0.r.0" }.should raise_error(ArgumentError)
 		end
 
 		it "should only allow integral version number components" do
@@ -69,6 +95,7 @@ describe SemverStringer::Semver do
 			lambda { SemverStringer::Semver.new :pre=>"underscore_is_forbidden" }.should raise_error(ArgumentError)
 			lambda { SemverStringer::Semver.new :pre=>"special$chars@not*allowed!" }.should raise_error(ArgumentError)
 			lambda { SemverStringer::Semver.new :pre=>["or", "in", "arrays!!!"] }.should raise_error(ArgumentError)
+			lambda { SemverStringer::Semver.new "1.2.3-alpha!" }.should raise_error(ArgumentError)
 		end
 	end
 
